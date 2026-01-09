@@ -5,7 +5,7 @@ import { ExecutionPlan } from "./types";
 export class AgentPlanner {
     constructor(private client: LLMClient) {}
 
-    async createPlan(userQuery: string): Promise<ExecutionPlan> {
+    async createPlan(userQuery: string): Promise<ExecutionPlan | undefined> {
     const systemPrompt = `你是一个数据分析专家。请将用户请求拆解为任务列表。
     必须返回 JSON 格式。
     JSON Schema 示例: 
@@ -17,6 +17,6 @@ export class AgentPlanner {
     }`;
 
     const responseText = await this.client.ask(userQuery, systemPrompt, true);
-    return JSON.parse(responseText) as ExecutionPlan;
+   return JSON.parse(responseText) as ExecutionPlan;
   }
 }

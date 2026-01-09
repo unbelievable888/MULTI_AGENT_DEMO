@@ -23,7 +23,7 @@ export class ExecutionEngine {
 
     constructor(private client: LLMClient) { }
 
-    async run(plan: ExecutionPlan): Promise<string> {
+    async run(plan: ExecutionPlan): Promise<string | undefined> {
         const independentTasks = plan.tasks.filter(t => t.dependencies.length === 0);
         await Promise.all(independentTasks.map(async (task) => {
             if (task.tool === TaskTool.Text2SQL) {
@@ -51,7 +51,7 @@ export class ExecutionEngine {
     }
 
     // 聚合
-    private async synthesize(task: AnalysisTask): Promise<string> {
+    private async synthesize(task: AnalysisTask): Promise<string|undefined> {
         const allResults = Array.from(this.resultsStore.entries())
             .map(([id, res]) => `任务 ${id} 结果: ${JSON.stringify(res)}`)
             .join("\n");
@@ -63,6 +63,7 @@ export class ExecutionEngine {
     `;
 
         const systemPrompt = "你是一个深度的业务逻辑分析师。请结合数据结果和文档背景，输出一份客观、详尽的分析报告。";
-        return await this.client.ask(prompt, systemPrompt);
+       return;
+        // return await this.client.ask(prompt, systemPrompt);
     }
 }
